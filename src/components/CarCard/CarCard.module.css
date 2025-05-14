@@ -1,0 +1,72 @@
+.card {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #1a1a1a;
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.details {
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.model {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--white);
+}
+
+.year {
+  font-size: 0.9em;
+  color: var(--white-600);
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.featureItem {
+  font-size: 0.85em;
+  color: var(--white-400);
+  padding-right: 10px;
+  border-right: 1px solid var(--white-400);
+}
+
+.featureItem:last-child {
+  border-right: none;
+}
+
+.readMoreButton {
+  display: block;
+  background-color: var(--yellow);
+  color: var(--text-button);
+  text-align: center;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.readMoreButton:hover {
+  background-color: #e0a522;
+}
