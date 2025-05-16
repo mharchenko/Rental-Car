@@ -6,7 +6,6 @@ export const fetchAllCarsThunk = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const data = await rentalApi.fetchAllCars(params);
-
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -50,7 +49,15 @@ const carsSlice = createSlice({
       })
       .addCase(fetchAllCarsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload; // { cars, totalCars }
+
+        if (state.page === 1) {
+          state.items = action.payload;
+        } else {
+          state.items = {
+            cars: [...state.items.cars, ...action.payload.cars],
+            totalCars: action.payload.totalCars,
+          };
+        }
       })
       .addCase(fetchAllCarsThunk.rejected, (state, action) => {
         state.loading = false;
