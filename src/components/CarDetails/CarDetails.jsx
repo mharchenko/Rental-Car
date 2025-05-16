@@ -32,11 +32,11 @@ export const CarDetails = () => {
   const handleRentSubmit = (event) => {
     event.preventDefault();
 
-    console.log('Rental data sent:', {
-      name: event.target.name.value,
-      phone: event.target.phone.value,
-      email: event.target.email.value,
-    });
+    // console.log('Rental data sent:', {
+    //   name: event.target.name.value,
+    //   phone: event.target.phone.value,
+    //   email: event.target.email.value,
+    // });
     setIsRentSuccess(true);
     setTimeout(() => {
       setIsRentSuccess(false);

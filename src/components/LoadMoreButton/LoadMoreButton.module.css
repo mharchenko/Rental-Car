@@ -1,16 +1,16 @@
 .button {
-  background-color: transparent;
-  color: var(--white-600);
-  border: 1px solid var(--white-600);
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 1em;
-  font-weight: 500;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0px;
+  border: 1px solid #3470ff;
+  border-radius: 12px;
+  width: 156px;
+  height: 44px;
+  margin: auto;
 }
 
 .button:hover {
-  background-color: var(--yellow);
-  color: var(--text-button);
-  border-color: var(--yellow);
+  border: 1px solid #0b44cd;
 }

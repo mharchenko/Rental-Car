@@ -6,7 +6,6 @@ export const HomePage = () => {
   return (
     <div className={styles.homePage}>
       <Banner />
-      {/* Додайте тут додатковий контент для головної сторінки, якщо потрібно */}
     </div>
   );
 };

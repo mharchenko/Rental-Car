@@ -1,78 +1,160 @@
 .filter {
-  background-color: #222;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  background-color: #ffffff;
+  width: 924px;
+  margin: auto;
+  margin-bottom: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.filter h3 {
-  color: var(--white);
-  margin-top: 0;
-  margin-bottom: 15px;
-  text-align: left;
+.filterControls {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
 }
 
 .filterGroup {
-  margin-bottom: 15px;
+  width: 204px;
+  height: 68px;
+  border-radius: 12px;
+  background-color: #f7f7f7;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease-in-out;
+}
+
+.filterGroup:focus-within {
+  box-shadow: 0 0 0 1px rgba(52, 112, 255, 0.3);
+  background-color: #f0f0f0;
+}
+
+.filterGroup_mileage {
+  width: 320px;
 }
 
 .label {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.33333;
+  color: #8d929a;
+  margin-bottom: 8px;
+  text-align: left;
   display: block;
-  color: var(--white-600);
-  margin-bottom: 5px;
+  background-color: #ffffff;
+}
+
+.selectContainer {
+  position: relative;
+  width: 100%;
+}
+
+.selectContainer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9' stroke='%23121417' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  transition: transform 0.2s ease-in-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.selectContainer.open::after {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .select {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #101828;
+  appearance: none;
+  background-color: transparent;
+  border: none;
   width: 100%;
-  padding: 10px;
-  border: 1px solid var(--white-400);
-  border-radius: 4px;
-  background-color: #333;
-  color: var(--white);
-  appearance: none; /* Видаляє стандартні стрілки select */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 14 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L7 7L13 1' stroke='%23BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-}
-
-.input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--white-400);
-  border-radius: 4px;
-  background-color: #333;
-  color: var(--white);
+  height: 44px;
+  padding: 0 30px 0 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  bottom: auto;
+  left: auto;
+  outline: none;
 }
 
 .mileageInputs {
   display: flex;
-  gap: 10px;
+  gap: 0;
+  position: absolute;
+  bottom: 1px;
+  left: 16px;
+  width: calc(100% - 32px);
 }
 
-.mileageInputs .input {
-  width: calc(50% - 5px);
+.mileageInputs > input {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #101828;
+  padding: 0 16px;
+  height: 44px;
+  border: none;
+  background-color: transparent;
+  outline: none;
 }
 
-.loaderContainer {
+.mileageInputs > input:first-child {
+  border-right: 1px solid #dadde1;
+  border-radius: 12px 0 0 12px;
+  width: 160px;
+  -moz-appearance: textfield;
+}
+
+.mileageInputs > input:first-child::-webkit-outer-spin-button,
+.mileageInputs > input:first-child::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mileageInputs > input:last-child {
+  border-radius: 0 12px 12px 0;
+  width: 160px;
+  -moz-appearance: textfield;
+}
+
+.mileageInputs > input:last-child::-webkit-outer-spin-button,
+.mileageInputs > input:last-child::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.searchButton {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0px;
+  border-radius: 12px;
+  padding: 12px 51px;
+  width: 156px;
+  height: 50px;
+  color: #fff;
+  background: #3470ff;
+  align-self: flex-end;
+  border: none;
 }
 
-.loader {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid var(--yellow);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.searchButton:hover {
+  background-color: #0b44cd;
 }

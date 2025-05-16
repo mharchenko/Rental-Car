@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleFavorite } from '../../redux/favorites/favoritesSlice';
 import { selectFavorites } from '../../redux/favorites/favoritesSelectors';
 import { Heart } from 'lucide-react';
+import styles from './FavoriteButton.module.css';
 
 const FavoriteButton = ({ car }) => {
   const dispatch = useDispatch();
@@ -11,26 +11,32 @@ const FavoriteButton = ({ car }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    if (car) {
-      setIsFavorite(favorites.some((favCar) => favCar.id === car.id));
-    }
+    if (!car || !car.id) return;
+    const isFav = favorites.some((favCar) => favCar?.id === car.id);
+    setIsFavorite(isFav);
   }, [favorites, car]);
 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+
+    if (!car) return;
+
+    setIsFavorite(!isFavorite);
+
     dispatch(toggleFavorite(car));
   };
+
+  const iconColor = isFavorite ? '#3470FF' : 'white';
+  const iconFill = isFavorite ? '#3470FF' : 'none';
 
   return (
     <button
       onClick={handleFavoriteClick}
-      className="absolute top-4 right-4 bg-transparent border-none cursor-pointer z-10"
+      className={styles.button}
       aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+      type="button"
     >
-      {isFavorite ? (
-        <Heart className="h-6 w-6 text-red-500 fill-red-500" />
-      ) : (
-        <Heart className="h-6 w-6 text-gray-300" />
-      )}
+      <Heart size={24} stroke={iconColor} fill={iconFill} strokeWidth={2} />
     </button>
   );
 };

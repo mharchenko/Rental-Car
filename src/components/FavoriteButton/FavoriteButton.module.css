@@ -3,21 +3,9 @@
   border: none;
   padding: 0;
   cursor: pointer;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
-  fill: var(--white-600);
-  transition: fill 0.3s ease;
-}
-
-.iconFilled {
-  width: 24px;
-  height: 24px;
-  fill: var(--yellow);
-}
-
-.button:hover .icon {
-  fill: var(--yellow);
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  outline: none;
 }

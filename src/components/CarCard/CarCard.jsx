@@ -10,41 +10,54 @@ import FavoriteButton from '../FavoriteButton/FavoriteButton.jsx';
 const CarCard = ({ car }) => {
   const dispatch = useDispatch();
   const favorites = useSelector(selectFavorites);
-  const isFavorite = favorites.some((favCar) => favCar?.id === car?.id);
+
+  const isFavorite = car && favorites.some((favCar) => favCar?.id === car.id);
 
   const handleAddToFavorites = () => {
+    if (!car) return;
     dispatch(toggleFavorite(car));
   };
 
+  const addressParts = car.address?.split(',').map((part) => part.trim()) || [];
+  const city =
+    addressParts.length >= 2 ? addressParts[addressParts.length - 2] : '';
+  const country =
+    addressParts.length >= 1 ? addressParts[addressParts.length - 1] : '';
+
   return (
     <li className={styles.card}>
-      <img src={car.img} alt={car.model} className={styles.image} />
-      <div className={styles.details}>
-        <div className={styles.header}>
-          <h3 className={styles.model}>
-            {car.make}{' '}
-            <span className={styles.year}>
-              {car.model}, {car.year}
-            </span>
-          </h3>
-          <FavoriteButton
-            isFavorite={isFavorite}
-            onClick={handleAddToFavorites}
-          />
+      <div className={styles.imageWrapper}>
+        <img src={car.img} alt={car.model} className={styles.image} />
+        <div className={styles.favoriteWrapper}>
+          <FavoriteButton car={car} />
         </div>
+      </div>
+
+      <div className={styles.details}>
+        <div className={styles.topRow}>
+          <h3 className={styles.model}>
+            <span className={styles.brand}>{car.brand}</span>{' '}
+            <span className={styles.modelName}>{car.model}</span>
+            <span className={styles.comma}>,</span>{' '}
+            <span className={styles.year}>{car.year}</span>
+          </h3>
+
+          <div className={styles.price}>
+            <span className={styles.dollarSign}>$</span>
+            {car.rentalPrice}
+          </div>
+        </div>
+
         <ul className={styles.features}>
-          <li className={styles.featureItem}>
-            {car.address.split(',')[1]?.trim()} |{' '}
-            {car.address.split(',')[2]?.trim()}
-          </li>
-          <li className={styles.featureItem}>{car.engineVolume}</li>
-          <li className={styles.featureItem}>
-            {formatNumberWithSpaces(car.mileage)} km
-          </li>
-          <li className={styles.featureItem}>{car.rentalPrice}</li>
+          <li>{city}</li>
+          <li>{country}</li>
+          <li>{car.rentalCompany}</li>
+          <li>{car.type}</li>
+          <li>{formatNumberWithSpaces(car.mileage)} km</li>
         </ul>
+
         <Link to={`/catalog/${car.id}`} className={styles.readMoreButton}>
-          Детальніше
+          Read more
         </Link>
       </div>
     </li>

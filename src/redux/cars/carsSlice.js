@@ -1,60 +1,45 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchAllCars } from '../../api/rentalApi';
+import * as rentalApi from '../../api/rentalApi';
 
 export const fetchAllCarsThunk = createAsyncThunk(
   'cars/fetchAll',
-  async (filters, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const response = await fetchAllCars(filters);
-      return response;
+      const data = await rentalApi.fetchAllCars(params);
+
+      return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
 
-const initialState = {
-  items: [],
-  loading: false,
-  error: null,
-  totalItems: 0,
-  page: 1,
-  filter: {
-    brand: '',
-    price: '',
-    mileageFrom: '',
-    mileageTo: '',
-  },
-};
-
 const carsSlice = createSlice({
   name: 'cars',
-  initialState,
-  reducers: {
-    resetCars: (state) => {
-      state.items = [];
-      state.page = 1;
-      state.filter = {
-        brand: '',
-        price: '',
-        mileageFrom: '',
-        mileageTo: '',
-      };
+  initialState: {
+    items: { cars: [], totalCars: 0 },
+    loading: false,
+    error: null,
+    page: 1,
+    filter: {
+      brand: '',
+      price: '',
+      mileageFrom: '',
+      mileageTo: '',
     },
-    setPage: (state, action) => {
+  },
+  reducers: {
+    setPage(state, action) {
       state.page = action.payload;
     },
-    setBrandFilter: (state, action) => {
-      state.filter.brand = action.payload;
+    setFilter(state, action) {
+      state.filter = { ...state.filter, ...action.payload };
     },
-    setPriceFilter: (state, action) => {
-      state.filter.price = action.payload;
-    },
-    setMileageFromFilter: (state, action) => {
-      state.filter.mileageFrom = action.payload;
-    },
-    setMileageToFilter: (state, action) => {
-      state.filter.mileageTo = action.payload;
+    resetCars(state) {
+      state.items = { cars: [], totalCars: 0 };
+      state.page = 1;
+      state.error = null;
+      state.loading = false;
     },
   },
   extraReducers: (builder) => {
@@ -65,8 +50,7 @@ const carsSlice = createSlice({
       })
       .addCase(fetchAllCarsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = [...state.items, ...action.payload.cars];
-        state.totalItems = action.payload.totalCars;
+        state.items = action.payload; // { cars, totalCars }
       })
       .addCase(fetchAllCarsThunk.rejected, (state, action) => {
         state.loading = false;
@@ -75,13 +59,5 @@ const carsSlice = createSlice({
   },
 });
 
-export const {
-  resetCars,
-  setPage,
-  setBrandFilter,
-  setPriceFilter,
-  setMileageFromFilter,
-  setMileageToFilter,
-} = carsSlice.actions;
-
+export const { setPage, setFilter, resetCars } = carsSlice.actions;
 export default carsSlice.reducer;

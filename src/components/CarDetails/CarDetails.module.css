@@ -90,15 +90,3 @@
 .rentButton:hover {
   background-color: #e0a522;
 }
-
-/* @media (max-width: 767px) {
-  .detailsContainer {
-    flex-direction: column;
-  }
-
-  .image {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-  }
-} */

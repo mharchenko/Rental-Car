@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Banner.module.css';
-import heroImage from '../../img/hero-image.jpg';
+import heroImage from '../../img/hero-image.png';
 
 export const Banner = () => {
   const navigate = useNavigate();

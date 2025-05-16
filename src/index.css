@@ -1,14 +1,14 @@
 body {
-  font-family: 'Poppins', sans-serif;
+  /* font-family: 'Poppins', sans-serif; */
   font-style: normal;
   line-height: normal;
   color: #fbfbfb;
-  background-color: #101010;
+  background-color: #f2f4f7;
   margin: 0;
   place-items: center;
   width: 100%;
-  min-width: 320px;
-  min-height: 100vh;
+  /* min-width: 320px;
+  min-height: 100vh; */
 }
 
 a {
@@ -18,7 +18,7 @@ a {
 }
 
 img {
-  width: 100%;
+  width: auto;
   height: auto;
 }
 
@@ -50,21 +50,10 @@ button {
 
 .container {
   max-width: 1440px;
+  min-height: 768px;
   margin: 0 auto;
-  padding: 0 16px;
+  /* padding: 0 16px; */
 }
-
-/* @media (min-width: 768px) {
-  .container {
-    padding: 0 32px;
-  }
-} */
-
-/* @media (min-width: 1280px) {
-  .container {
-    padding: 0 16px;
-  }
-} */
 
 .visually-hidden {
   position: absolute;
