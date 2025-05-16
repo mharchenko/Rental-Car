@@ -1,41 +1,3 @@
-// import axios from 'axios';
-
-// const BASE_URL = 'https://car-rental-api.goit.global/';
-
-// const rentalApi = axios.create({
-//   baseURL: BASE_URL,
-// });
-
-// export const fetchAllCars = async (params = {}) => {
-//   try {
-//     const response = await rentalApi.get('/cars', { params });
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching cars:', error);
-//     throw error;
-//   }
-// };
-
-// export const fetchCarById = async (id) => {
-//   try {
-//     const response = await rentalApi.get(`/cars/${id}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error(`Error fetching car with ID ${id}:`, error);
-//     throw error;
-//   }
-// };
-
-// export const getCarBrands = async () => {
-//   try {
-//     const response = await rentalApi.get('/brands');
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching car brands:', error);
-//     throw error;
-//   }
-// };
-
 import axios from 'axios';
 
 const BASE_URL = 'https://car-rental-api.goit.global/';
@@ -44,7 +6,6 @@ const rentalApi = axios.create({
   baseURL: BASE_URL,
 });
 
-// Оновлено: додано підтримку пагінації через `page` і `limit`
 export const fetchAllCars = async ({
   brand = '',
   price = '',
@@ -54,31 +15,68 @@ export const fetchAllCars = async ({
   limit = 12,
 }) => {
   try {
-    const params = {
-      brand,
-      price,
-      mileageFrom,
-      mileageTo,
-      page,
-      limit,
-    };
+    const response = await rentalApi.get('/cars');
 
-    const response = await rentalApi.get('/cars', { params });
+    let allCars = [];
+    let totalCars = 0;
+    let totalPages = 1;
 
-    // Перевірка чи це масив (стара версія API без пагінації)
     if (Array.isArray(response.data)) {
-      const start = (page - 1) * limit;
-      const paginatedCars = response.data.slice(start, start + limit);
-      return {
-        cars: paginatedCars,
-        totalCars: response.data.length,
-      };
+      allCars = response.data;
+      totalCars = response.data.length;
+    } else if (response.data && Array.isArray(response.data.cars)) {
+      allCars = response.data.cars;
+      totalCars = response.data.totalCars || response.data.cars.length;
+      totalPages = response.data.totalPages || Math.ceil(totalCars / limit);
+    } else {
+      console.error('Unexpected API response format:', response.data);
+      return { cars: [], totalCars: 0, totalPages: 0 };
     }
 
-    // У випадку, якщо бекенд уже підтримує пагінацію
+    let filteredCars = [...allCars];
+
+    if (brand) {
+      filteredCars = filteredCars.filter((car) => car.brand === brand);
+    }
+
+    if (price) {
+      filteredCars = filteredCars.filter((car) => {
+        try {
+          const carPrice = Number(car.rentalPrice.replace('$', ''));
+          return carPrice <= Number(price);
+        } catch (error) {
+          console.error('Error filtering by price:', error);
+          return false;
+        }
+      });
+    }
+
+    if (mileageFrom && !isNaN(Number(mileageFrom))) {
+      filteredCars = filteredCars.filter(
+        (car) => car.mileage && car.mileage >= Number(mileageFrom)
+      );
+    }
+
+    if (mileageTo && !isNaN(Number(mileageTo))) {
+      filteredCars = filteredCars.filter(
+        (car) => car.mileage && car.mileage <= Number(mileageTo)
+      );
+    }
+
+    const totalFilteredCars = filteredCars.length;
+
+    const filteredTotalPages = Math.ceil(totalFilteredCars / limit);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = Math.min(startIndex + limit, totalFilteredCars);
+
+    const carsForCurrentPage = filteredCars.slice(startIndex, endIndex);
+
     return {
-      cars: response.data.cars || [],
-      totalCars: response.data.totalCars || 0,
+      cars: carsForCurrentPage,
+      totalCars: totalFilteredCars,
+      page: page,
+      totalPages: filteredTotalPages,
     };
   } catch (error) {
     console.error('Error fetching cars:', error);

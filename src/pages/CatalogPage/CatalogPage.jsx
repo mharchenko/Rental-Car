@@ -17,7 +17,11 @@ import styles from './CatalogPage.module.css';
 const CatalogPage = () => {
   const dispatch = useDispatch();
 
-  const { cars: allCars = [], totalCars = 0 } = useSelector(selectCars);
+  const {
+    cars: allCars = [],
+    totalCars = 0,
+    totalPages = 0,
+  } = useSelector(selectCars);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
   const page = useSelector(selectPage);
@@ -26,18 +30,17 @@ const CatalogPage = () => {
   const CARS_PER_PAGE = 12;
 
   useEffect(() => {
-    dispatch(setPage(1));
-  }, [dispatch, filter]);
-
-  useEffect(() => {
-    dispatch(fetchAllCarsThunk({ ...filter, page }));
-  }, [dispatch, filter, page]);
+    dispatch(fetchAllCarsThunk({ ...filter, page, limit: CARS_PER_PAGE }));
+  }, [dispatch, filter, page, CARS_PER_PAGE]);
 
   const handleLoadMore = () => {
-    dispatch(setPage(page + 1));
+    const nextPage = Math.min(page + 1, totalPages);
+    if (nextPage !== page) {
+      dispatch(setPage(nextPage));
+    }
   };
 
-  const shouldShowLoadMore = allCars.length < totalCars;
+  const moreToLoad = page < totalPages && allCars.length < totalCars;
 
   if (loading && page === 1) {
     return <Loader />;
@@ -49,7 +52,6 @@ const CatalogPage = () => {
 
   return (
     <div className={styles.catalogPage}>
-      <h1>Catalog of cars</h1>
       <Filter />
       {allCars.length > 0 ? (
         <ul className={styles.carList}>
@@ -61,9 +63,8 @@ const CatalogPage = () => {
         <p>No cars found according to the specified criteria.</p>
       )}
       {loading && page > 1 && <Loader />}
-      {shouldShowLoadMore && !loading && (
-        <LoadMoreButton onClick={handleLoadMore} />
-      )}
+
+      {moreToLoad && !loading && <LoadMoreButton onClick={handleLoadMore} />}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilter, resetCars } from '../../redux/cars/carsSlice.js';
+import { setFilter, setPage } from '../../redux/cars/carsSlice.js';
 import { getCarBrands } from '../../api/rentalApi.js';
-import { selectFilter } from '../../redux/filter/filterSelectors.js';
+import { selectFilter } from '../../redux/cars/carsSelectors.js';
 import { Loader } from '../Loader/Loader.jsx';
 import styles from './Filter.module.css';
 
@@ -35,6 +35,13 @@ export const Filter = () => {
     loadBrands();
   }, []);
 
+  useEffect(() => {
+    setLocalBrandFilter(filter.brand);
+    setLocalPriceFilter(filter.price);
+    setLocalMileageFrom(filter.mileageFrom);
+    setLocalMileageTo(filter.mileageTo);
+  }, [filter]);
+
   const handleBrandChange = useCallback((event) => {
     setLocalBrandFilter(event.target.value);
   }, []);
@@ -52,7 +59,8 @@ export const Filter = () => {
   }, []);
 
   const handleSearch = useCallback(() => {
-    dispatch(resetCars());
+    dispatch(setPage(1));
+
     dispatch(
       setFilter({
         brand: localBrandFilter,
