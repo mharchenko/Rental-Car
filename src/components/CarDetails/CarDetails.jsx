@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { MapPin } from 'lucide-react';
 import { fetchCarById } from '../../api/rentalApi.js';
 import { formatNumberWithSpaces } from '../../utils/formatNumberWithSpaces.js';
-import styles from './CarDetails.module.css';
 import { Loader } from '../Loader/Loader.jsx';
-import { Notification } from '../Notification/Notification.jsx';
+import styles from './CarDetails.module.css';
+import icons from '../../img/icons.svg';
 
 export const CarDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isRentSuccess, setIsRentSuccess] = useState(false);
 
   useEffect(() => {
     const getCarDetails = async () => {
@@ -29,19 +30,8 @@ export const CarDetails = () => {
     getCarDetails();
   }, [id]);
 
-  const handleRentSubmit = (event) => {
-    event.preventDefault();
-
-    // console.log('Rental data sent:', {
-    //   name: event.target.name.value,
-    //   phone: event.target.phone.value,
-    //   email: event.target.email.value,
-    // });
-    setIsRentSuccess(true);
-    setTimeout(() => {
-      setIsRentSuccess(false);
-    }, 3000);
-    event.target.reset();
+  const handleGoBack = () => {
+    navigate('/catalog');
   };
 
   if (loading) {
@@ -49,89 +39,224 @@ export const CarDetails = () => {
   }
 
   if (error) {
-    return <p>Error loading car parts: {error}</p>;
+    return <p className={styles.error}>Error loading car details: {error}</p>;
   }
 
   if (!car) {
-    return <p>Car not found.</p>;
+    return <p className={styles.notFound}>Car not found.</p>;
+  }
+
+  const addressParts = car.address?.split(',').map((part) => part.trim()) || [];
+  const city =
+    addressParts.length >= 2 ? addressParts[addressParts.length - 2] : '';
+  const country =
+    addressParts.length >= 1 ? addressParts[addressParts.length - 1] : '';
+
+  let rentalConditions = [];
+  if (Array.isArray(car.rentalConditions)) {
+    rentalConditions = car.rentalConditions;
+  } else if (typeof car.rentalConditions === 'string') {
+    rentalConditions = car.rentalConditions.split('\n');
+  }
+
+  const ageCondition = rentalConditions.find((condition) =>
+    condition.toLowerCase().includes('minimum age')
+  );
+  let minimumAge = '';
+  if (ageCondition) {
+    const ageMatch = ageCondition.match(/\d+/);
+    minimumAge = ageMatch ? ageMatch[0] : '';
   }
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>
-        {car.make} {car.model}
-      </h2>
-      <div className={styles.detailsContainer}>
-        <img
-          src={car.img}
-          alt={`${car.make} ${car.model}`}
-          className={styles.image}
-        />
-        <div className={styles.info}>
-          <p className={styles.description}>{car.description}</p>
-          <ul className={styles.features}>
-            <li>Марка: {car.make}</li>
-            <li>Модель: {car.model}</li>
-            <li>Рік випуску: {car.year}</li>
-            <li>Пробіг: {formatNumberWithSpaces(car.mileage)} km</li>
-            <li>Коробка передач: {car.transmission}</li>
-            <li>Паливо: {car.fuelType}</li>
-            <li>Об'єм двигуна: {car.engineVolume}</li>
-            <li>Ціна оренди: {car.rentalPrice}</li>
-          </ul>
+      <div className={styles.contentWrapper}>
+        <div className={styles.leftColumn}>
+          <div className={styles.imageContainer}>
+            <img
+              src={car.img}
+              alt={`${car.brand} ${car.model}`}
+              className={styles.carImage}
+            />
+          </div>
+
+          <div className={styles.bookingSection}>
+            <div className={styles.bookingTitleWrapper}>
+              <h3 className={styles.bookingTitle}>Book your car now</h3>
+              <p className={styles.bookingText}>
+                Stay connected! We are always ready to help you.
+              </p>
+            </div>
+
+            <form className={styles.bookingForm}>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Name*"
+                  className={styles.formInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Email*"
+                  className={styles.formInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <input
+                  type="date"
+                  id="bookingDate"
+                  name="bookingDate"
+                  className={styles.formInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  placeholder="Comment"
+                  className={styles.formTextarea}
+                ></textarea>
+              </div>
+
+              <button type="submit" className={styles.sendButton}>
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className={styles.rightColumn}>
+          <div className={styles.detailsBlock}>
+            <h1 className={styles.carTitle}>
+              {car.brand} {car.model}, {car.year}
+              <span className={styles.idSeparator}></span>
+              <span className={styles.carId}>
+                ID: {car.id?.substring(0, 4) || 'N/A'}
+              </span>
+            </h1>
+
+            <div className={styles.locationInfo}>
+              <MapPin size={16} className={styles.locationIcon} />
+              <span>
+                {city}, {country}
+              </span>
+              <span className={styles.separator}>|</span>
+              <span>Mileage: {formatNumberWithSpaces(car.mileage)} km</span>
+            </div>
+
+            <div className={styles.priceInfo}>
+              <span className={styles.price}>${car.rentalPrice}</span>
+            </div>
+
+            <p className={styles.description}>{car.description}</p>
+          </div>
+
+          <div className={styles.carInfoBlock}>
+            <div className={styles.conditionsSection}>
+              <h2 className={styles.sectionTitle}>Rental Conditions:</h2>
+              <ul className={styles.conditionsList}>
+                {minimumAge && (
+                  <li className={styles.conditionItem}>
+                    <svg className={styles.checkIcon}>
+                      <use href={`${icons}#icon-check-circle`} />
+                    </svg>
+                    Minimum age : {minimumAge}
+                  </li>
+                )}
+                {rentalConditions
+                  .filter((c) => !c.toLowerCase().includes('minimum age'))
+                  .map((condition, index) => (
+                    <li key={index} className={styles.conditionItem}>
+                      <svg className={styles.checkIcon}>
+                        <use href={`${icons}#icon-check-circle`} />
+                      </svg>
+                      {condition}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+
+            <div className={styles.specificationSection}>
+              <h2 className={styles.sectionTitle}>Car Specifications:</h2>
+              <ul className={styles.specsList}>
+                <li className={styles.specItem}>
+                  <svg className={styles.specIcon}>
+                    <use href={`${icons}#icon-calendar`} />
+                  </svg>
+                  Year: {car.year}
+                </li>
+                <li className={styles.specItem}>
+                  <svg className={styles.specIcon}>
+                    <use href={`${icons}#icon-car`} />
+                  </svg>
+                  Type: {car.type}
+                </li>
+                <li className={styles.specItem}>
+                  <svg className={styles.specIcon}>
+                    <use href={`${icons}#icon-fuel-pump`} />
+                  </svg>
+                  Fuel Consumption: {car.fuelConsumption}
+                </li>
+                <li className={styles.specItem}>
+                  <svg className={styles.specIcon}>
+                    <use href={`${icons}#icon-gear`} />
+                  </svg>
+                  Engine Size: {car.engineSize}
+                </li>
+              </ul>
+            </div>
+
+            <div className={styles.accessoriesSection}>
+              <h2 className={styles.sectionTitle}>
+                Accessories and functionalities:
+              </h2>
+              <ul className={styles.accessoriesList}>
+                {car.accessories &&
+                  car.accessories.map((item, index) => (
+                    <li
+                      key={`accessory-${index}`}
+                      className={styles.accessoryItem}
+                    >
+                      <svg className={styles.checkIcon}>
+                        <use href={`${icons}#icon-check-circle`} />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+
+                {car.functionalities &&
+                  car.functionalities.map((item, index) => (
+                    <li
+                      key={`functionality-${index}`}
+                      className={styles.accessoryItem}
+                    >
+                      <svg className={styles.checkIcon}>
+                        <use href={`${icons}#icon-check-circle`} />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className={styles.rentalForm}>
-        <h3>Форма оренди</h3>
-        <form onSubmit={handleRentSubmit}>
-          <div className={styles.formGroup}>
-            <label htmlFor="name" className={styles.label}>
-              Ім'я:
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className={styles.input}
-              required
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="phone" className={styles.label}>
-              Телефон:
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              className={styles.input}
-              required
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>
-              Email:
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className={styles.input}
-              required
-            />
-          </div>
-          <button type="submit" className={styles.rentButton}>
-            Орендувати
-          </button>
-        </form>
-        {isRentSuccess && (
-          <Notification
-            message="Автомобіль успішно заброньовано!"
-            type="success"
-          />
-        )}
-      </div>
+      <button className={styles.backButton} onClick={handleGoBack}>
+        Back to catalog
+      </button>
     </div>
   );
 };

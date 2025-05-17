@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 import styles from './FavoritesModal.module.css';
 import CarCard from '../CarCard/CarCard';
@@ -6,9 +7,15 @@ import { useFavorites } from '../../hooks/useFavorites';
 
 const FavoritesModal = ({ onClose }) => {
   const { favorites, count } = useFavorites();
+  const navigate = useNavigate();
 
   const handleContentClick = (e) => {
     e.stopPropagation();
+  };
+
+  const handleReadMoreClick = (carId) => {
+    onClose();
+    navigate(`/catalog/${carId}`);
   };
 
   return (
@@ -36,7 +43,13 @@ const FavoritesModal = ({ onClose }) => {
                   return null;
                 }
 
-                return <CarCard key={car.id} car={car} />;
+                return (
+                  <CarCard
+                    key={car.id}
+                    car={car}
+                    onReadMoreClick={handleReadMoreClick}
+                  />
+                );
               })}
             </ul>
           ) : (

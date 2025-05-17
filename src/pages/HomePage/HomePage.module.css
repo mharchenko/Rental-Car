@@ -1,6 +1,7 @@
 .homePage {
   min-height: calc(100vh - 68px);
-  width: 100%;
+  width: 1440px;
   position: relative;
   overflow: hidden;
+  margin: auto;
 }

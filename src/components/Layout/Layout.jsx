@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import FavoritesModal from '../FavoritesModal/FavoritesModal';
 import { useFavorites } from '../../hooks/useFavorites';
@@ -10,6 +10,7 @@ import icons from '../../img/icons.svg';
 export const Layout = () => {
   const { count } = useFavorites();
   const [isFavoritesModalOpen, setIsFavoritesModalOpen] = useState(false);
+  const location = useLocation();
 
   const openFavoritesModal = () => {
     setIsFavoritesModalOpen(true);
@@ -20,6 +21,8 @@ export const Layout = () => {
     setIsFavoritesModalOpen(false);
     document.body.style.overflow = 'auto';
   };
+
+  const isCatalogPage = location.pathname.includes('/catalog');
 
   return (
     <div className={styles.container}>
@@ -46,16 +49,18 @@ export const Layout = () => {
             </ul>
           </nav>
 
-          <button
-            className={styles.favoritesButton}
-            onClick={openFavoritesModal}
-            aria-label="Open favorite cars"
-          >
-            <Heart size={24} className={styles.heartIcon} />
-            {count > 0 && (
-              <span className={styles.favoritesCount}>{count}</span>
-            )}
-          </button>
+          {isCatalogPage && (
+            <button
+              className={styles.favoritesButton}
+              onClick={openFavoritesModal}
+              aria-label="Open favorite cars"
+            >
+              <Heart size={24} className={styles.heartIcon} />
+              {count > 0 && (
+                <span className={styles.favoritesCount}>{count}</span>
+              )}
+            </button>
+          )}
         </div>
       </header>
 

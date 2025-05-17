@@ -1,15 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { formatNumberWithSpaces } from '../../utils/formatNumberWithSpaces.js';
 import styles from './CarCard.module.css';
 import FavoriteButton from '../FavoriteButton/FavoriteButton.jsx';
 
-const CarCard = ({ car }) => {
+const CarCard = ({ car, onReadMoreClick }) => {
+  const navigate = useNavigate();
+
   const addressParts = car.address?.split(',').map((part) => part.trim()) || [];
   const city =
     addressParts.length >= 2 ? addressParts[addressParts.length - 2] : '';
   const country =
     addressParts.length >= 1 ? addressParts[addressParts.length - 1] : '';
+
+  const handleReadMoreClick = (e) => {
+    e.preventDefault();
+
+    if (onReadMoreClick) {
+      onReadMoreClick(car.id);
+    } else {
+      navigate(`/catalog/${car.id}`);
+    }
+  };
 
   return (
     <li className={styles.card}>
@@ -43,9 +55,9 @@ const CarCard = ({ car }) => {
           <li>{formatNumberWithSpaces(car.mileage)} km</li>
         </ul>
 
-        <Link to={`/catalog/${car.id}`} className={styles.readMoreButton}>
+        <button onClick={handleReadMoreClick} className={styles.readMoreButton}>
           Read more
-        </Link>
+        </button>
       </div>
     </li>
   );

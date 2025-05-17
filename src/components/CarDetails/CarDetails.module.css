@@ -1,92 +1,288 @@
 .container {
-  padding: 20px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 120px;
+  font-family: 'Manrope', sans-serif;
+  color: #121417;
 }
 
-.title {
-  font-size: 2em;
-  color: var(--white);
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.detailsContainer {
+.contentWrapper {
   display: flex;
-  gap: 30px;
-  margin-bottom: 30px;
+  gap: 32px;
+  margin-top: 84px;
 }
 
-.image {
-  max-width: 500px;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.leftColumn {
+  width: 640px;
 }
 
-.info {
-  color: var(--white-600);
+.imageContainer {
+  width: 640px;
+  height: 512px;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
-.description {
-  margin-bottom: 15px;
-  line-height: 1.6;
+.carImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.features {
-  list-style: none;
-  padding: 0;
+.bookingSection {
+  width: 640px;
+  height: 512px;
+  margin-top: 40px;
+  padding: 32px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.bookingTitleWrapper {
+  width: 576px;
+  height: 52px;
+}
+
+.bookingTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #121417;
   margin: 0;
 }
 
-.features li {
-  margin-bottom: 8px;
-  color: var(--white-400);
+.bookingText {
+  font-size: 14px;
+  color: #8a8a89;
+  margin-top: 8px;
+  margin-bottom: 0;
 }
 
-.rentalForm {
-  background-color: #222;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.rentalForm h3 {
-  color: var(--white);
-  margin-top: 0;
-  margin-bottom: 15px;
-  text-align: center;
+.bookingForm {
+  width: 576px;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .formGroup {
-  margin-bottom: 15px;
-}
-
-.label {
-  display: block;
-  color: var(--white-600);
-  margin-bottom: 5px;
-}
-
-.input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid var(--white-400);
-  border-radius: 4px;
-  background-color: #333;
-  color: var(--white);
 }
 
-.rentButton {
-  background-color: var(--yellow);
-  color: var(--text-button);
+.formInput {
+  width: 576px;
+  height: 48px;
+  padding: 14px 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #121417;
+  outline: none;
+}
+
+.formInput::placeholder {
+  color: #8a8a89;
+}
+
+.formInput:focus {
+  border-color: #3470ff;
+}
+
+.formTextarea {
+  width: 576px;
+  height: 88px;
+  padding: 14px 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #121417;
+  outline: none;
+  resize: none;
+}
+
+.formTextarea::placeholder {
+  color: #8a8a89;
+}
+
+.formTextarea:focus {
+  border-color: #3470ff;
+}
+
+.sendButton {
+  width: 156px;
+  height: 44px;
+  margin-top: 24px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #3470ff;
+  color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 5px;
-  font-size: 1em;
+  border-radius: 8px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: 100%;
 }
 
-.rentButton:hover {
-  background-color: #e0a522;
+.sendButton:hover {
+  background-color: #0b44cd;
+}
+
+.rightColumn {
+  width: 488px;
+}
+
+.detailsBlock {
+  width: 488px;
+  height: 180px;
+  margin-top: 40px;
+}
+
+.carTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #121417;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.idSeparator {
+  display: inline-block;
+  width: 16px;
+}
+
+.carId {
+  font-size: 14px;
+  color: #8a8a89;
+  font-weight: normal;
+}
+
+.locationInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #12141780;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.locationIcon {
+  color: #12141780;
+}
+
+.separator {
+  display: inline-block;
+  margin: 0 4px;
+}
+
+.priceInfo {
+  margin-top: 16px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: 600;
+  color: #3470ff;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #121417;
+  margin-top: 16px;
+}
+
+.carInfoBlock {
+  width: 488px;
+  height: 722px;
+  margin-top: 88px;
+}
+
+.conditionsSection {
+  width: 488px;
+  height: 136px;
+}
+
+.specificationSection {
+  width: 488px;
+  height: 172px;
+  margin-top: 110px;
+}
+
+.accessoriesSection {
+  width: 488px;
+  height: 244px;
+  margin-top: 110px;
+}
+
+.sectionTitle {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #101828;
+  margin-bottom: 20px;
+}
+
+.conditionsList,
+.specsList,
+.accessoriesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.conditionItem,
+.specItem,
+.accessoryItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #363535;
+}
+
+.checkIcon,
+.specIcon {
+  width: 16px;
+  height: 16px;
+  color: #3470ff;
+  flex-shrink: 0;
+}
+
+.conditionHighlight {
+  color: inherit;
+  font-weight: normal;
+  margin-left: 2px;
+}
+
+.backButton {
+  background-color: transparent;
+  color: #3470ff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  margin-top: 14px;
+  margin-bottom: 40px;
+  text-decoration: underline;
+  align-self: flex-start;
+}
+
+.backButton:hover {
+  color: #0b44cd;
+}
+
+.error,
+.notFound {
+  color: #ff5252;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 24px;
 }
