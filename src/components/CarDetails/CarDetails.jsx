@@ -4,6 +4,7 @@ import { MapPin } from 'lucide-react';
 import { fetchCarById } from '../../api/rentalApi.js';
 import { formatNumberWithSpaces } from '../../utils/formatNumberWithSpaces.js';
 import { Loader } from '../Loader/Loader.jsx';
+import { Notification } from '../Notification/Notification.jsx';
 import styles from './CarDetails.module.css';
 import icons from '../../img/icons.svg';
 
@@ -13,6 +14,15 @@ export const CarDetails = () => {
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    bookingDate: '',
+    comment: '',
+  });
+
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     const getCarDetails = async () => {
@@ -32,6 +42,46 @@ export const CarDetails = () => {
 
   const handleGoBack = () => {
     navigate('/catalog');
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.name || !formData.email || !formData.bookingDate) {
+      setNotification({
+        message: 'Please fill all required fields',
+        type: 'error',
+      });
+      return;
+    }
+
+    console.log('Booking car:', {
+      carId: car.id,
+      brand: car.brand,
+      model: car.model,
+      ...formData,
+    });
+
+    setNotification({
+      message: 'Car successfully booked! We will contact you soon.',
+      type: 'success',
+    });
+
+    setFormData({
+      name: '',
+      email: '',
+      bookingDate: '',
+      comment: '',
+    });
+  };
+
+  const closeNotification = () => {
+    setNotification(null);
   };
 
   if (loading) {
@@ -88,7 +138,7 @@ export const CarDetails = () => {
               </p>
             </div>
 
-            <form className={styles.bookingForm}>
+            <form className={styles.bookingForm} onSubmit={handleSubmit}>
               <div className={styles.formGroup}>
                 <input
                   type="text"
@@ -96,6 +146,8 @@ export const CarDetails = () => {
                   name="name"
                   placeholder="Name*"
                   className={styles.formInput}
+                  value={formData.name}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -107,6 +159,8 @@ export const CarDetails = () => {
                   name="email"
                   placeholder="Email*"
                   className={styles.formInput}
+                  value={formData.email}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -117,6 +171,8 @@ export const CarDetails = () => {
                   id="bookingDate"
                   name="bookingDate"
                   className={styles.formInput}
+                  value={formData.bookingDate}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -127,6 +183,8 @@ export const CarDetails = () => {
                   name="comment"
                   placeholder="Comment"
                   className={styles.formTextarea}
+                  value={formData.comment}
+                  onChange={handleInputChange}
                 ></textarea>
               </div>
 
@@ -257,6 +315,14 @@ export const CarDetails = () => {
       <button className={styles.backButton} onClick={handleGoBack}>
         Back to catalog
       </button>
+
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
     </div>
   );
 };
