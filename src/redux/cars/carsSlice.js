@@ -64,6 +64,11 @@ const carsSlice = createSlice({
       .addCase(fetchAllCarsThunk.fulfilled, (state, action) => {
         state.loading = false;
 
+        console.log(
+          'Redux: processing data from page',
+          action.payload?.requestedPage
+        );
+
         if (!action.payload || typeof action.payload !== 'object') {
           console.error('Unexpected payload format:', action.payload);
           return;
@@ -72,6 +77,10 @@ const carsSlice = createSlice({
         const { cars, totalCars, page, totalPages, requestedPage } =
           action.payload;
 
+        console.log(
+          `Processing ${cars?.length || 0} cars for page ${requestedPage}`
+        );
+
         if (requestedPage === 1) {
           state.items = {
             cars: cars || [],
@@ -79,6 +88,7 @@ const carsSlice = createSlice({
             page: page || 1,
             totalPages: totalPages || 0,
           };
+          console.log(`Set initial ${cars?.length || 0} cars for page 1`);
         } else {
           const existingCars = state.items.cars || [];
           const newCars = cars || [];
@@ -86,6 +96,10 @@ const carsSlice = createSlice({
           const existingIds = new Set(existingCars.map((car) => car.id));
           const uniqueNewCars = newCars.filter(
             (car) => !existingIds.has(car.id)
+          );
+
+          console.log(
+            `Adding ${uniqueNewCars.length} unique cars to existing ${existingCars.length}`
           );
 
           state.items = {
@@ -99,10 +113,15 @@ const carsSlice = createSlice({
         if (state.page > state.items.totalPages && state.items.totalPages > 0) {
           state.page = state.items.totalPages;
         }
+
+        console.log(
+          `Redux state after update: ${state.items.cars.length} cars, page ${state.page}/${state.items.totalPages}`
+        );
       })
       .addCase(fetchAllCarsThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        console.error('Error fetching cars:', action.payload);
       });
   },
 });

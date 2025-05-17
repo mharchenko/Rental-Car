@@ -15,68 +15,52 @@ export const fetchAllCars = async ({
   limit = 12,
 }) => {
   try {
-    const response = await rentalApi.get('/cars');
+    console.log(`Requesting page ${page} with limit ${limit}...`);
 
-    let allCars = [];
+    const response = await rentalApi.get('/cars', {
+      params: {
+        page,
+        limit,
+        brand: brand || undefined,
+        price: price || undefined,
+        mileageFrom: mileageFrom || undefined,
+        mileageTo: mileageTo || undefined,
+      },
+    });
+
+    console.log('API response received:', response.status);
+
+    let cars = [];
     let totalCars = 0;
     let totalPages = 1;
 
     if (Array.isArray(response.data)) {
-      allCars = response.data;
+      cars = response.data;
       totalCars = response.data.length;
+      totalPages = Math.ceil(totalCars / limit);
+      console.log(`Received array of ${cars.length} cars`);
     } else if (response.data && Array.isArray(response.data.cars)) {
-      allCars = response.data.cars;
+      cars = response.data.cars;
       totalCars = response.data.totalCars || response.data.cars.length;
       totalPages = response.data.totalPages || Math.ceil(totalCars / limit);
+      console.log(
+        `Received page ${
+          response.data.page || page
+        } of ${totalPages} pages, with ${
+          cars.length
+        } cars (total: ${totalCars})`
+      );
     } else {
       console.error('Unexpected API response format:', response.data);
-      return { cars: [], totalCars: 0, totalPages: 0 };
+      return { cars: [], totalCars: 0, totalPages: 0, page: page };
     }
-
-    let filteredCars = [...allCars];
-
-    if (brand) {
-      filteredCars = filteredCars.filter((car) => car.brand === brand);
-    }
-
-    if (price) {
-      filteredCars = filteredCars.filter((car) => {
-        try {
-          const carPrice = Number(car.rentalPrice.replace('$', ''));
-          return carPrice <= Number(price);
-        } catch (error) {
-          console.error('Error filtering by price:', error);
-          return false;
-        }
-      });
-    }
-
-    if (mileageFrom && !isNaN(Number(mileageFrom))) {
-      filteredCars = filteredCars.filter(
-        (car) => car.mileage && car.mileage >= Number(mileageFrom)
-      );
-    }
-
-    if (mileageTo && !isNaN(Number(mileageTo))) {
-      filteredCars = filteredCars.filter(
-        (car) => car.mileage && car.mileage <= Number(mileageTo)
-      );
-    }
-
-    const totalFilteredCars = filteredCars.length;
-
-    const filteredTotalPages = Math.ceil(totalFilteredCars / limit);
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = Math.min(startIndex + limit, totalFilteredCars);
-
-    const carsForCurrentPage = filteredCars.slice(startIndex, endIndex);
 
     return {
-      cars: carsForCurrentPage,
-      totalCars: totalFilteredCars,
-      page: page,
-      totalPages: filteredTotalPages,
+      cars,
+      totalCars,
+      page: response.data.page || page,
+      totalPages,
+      requestedPage: page,
     };
   } catch (error) {
     console.error('Error fetching cars:', error);

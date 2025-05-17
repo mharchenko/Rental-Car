@@ -30,13 +30,24 @@ const CatalogPage = () => {
   const CARS_PER_PAGE = 12;
 
   useEffect(() => {
+    console.log(`Loading page ${page} with limit ${CARS_PER_PAGE}...`);
     dispatch(fetchAllCarsThunk({ ...filter, page, limit: CARS_PER_PAGE }));
   }, [dispatch, filter, page, CARS_PER_PAGE]);
 
+  useEffect(() => {
+    console.log('Cars data state:', {
+      currentPage: page,
+      totalPages,
+      loadedCars: allCars.length,
+      totalCars,
+      shouldShowLoadMore: page < totalPages && allCars.length < totalCars,
+    });
+  }, [page, totalPages, allCars.length, totalCars]);
+
   const handleLoadMore = () => {
-    const nextPage = Math.min(page + 1, totalPages);
-    if (nextPage !== page) {
-      dispatch(setPage(nextPage));
+    if (page < totalPages) {
+      console.log(`Loading next page: ${page + 1}...`);
+      dispatch(setPage(page + 1));
     }
   };
 
@@ -53,6 +64,7 @@ const CatalogPage = () => {
   return (
     <div className={styles.catalogPage}>
       <Filter />
+
       {allCars.length > 0 ? (
         <ul className={styles.carList}>
           {allCars.map((car) => (
@@ -62,9 +74,14 @@ const CatalogPage = () => {
       ) : (
         <p>No cars found according to the specified criteria.</p>
       )}
+
       {loading && page > 1 && <Loader />}
 
-      {moreToLoad && !loading && <LoadMoreButton onClick={handleLoadMore} />}
+      {moreToLoad && !loading && (
+        <div className={styles.loadMoreContainer}>
+          <LoadMoreButton onClick={handleLoadMore} />
+        </div>
+      )}
     </div>
   );
 };
