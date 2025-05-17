@@ -17,7 +17,7 @@ The "RentalCar" web application is designed for a car rental company. Users can 
 
 1.  Clone the repository:
     ```bash
-    git clone <посилання на ваш репозиторій>
+    git clone git@github.com:mharchenko/Rental-Car.git
     ```
 2.  Navigate to the project directory:
     ```bash
