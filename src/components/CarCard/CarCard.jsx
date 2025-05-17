@@ -1,23 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleFavorite } from '../../redux/favorites/favoritesSlice.js';
-import { selectFavorites } from '../../redux/favorites/favoritesSelectors.js';
 import { formatNumberWithSpaces } from '../../utils/formatNumberWithSpaces.js';
 import styles from './CarCard.module.css';
 import FavoriteButton from '../FavoriteButton/FavoriteButton.jsx';
 
 const CarCard = ({ car }) => {
-  const dispatch = useDispatch();
-  const favorites = useSelector(selectFavorites);
-
-  const isFavorite = car && favorites.some((favCar) => favCar?.id === car.id);
-
-  const handleAddToFavorites = () => {
-    if (!car) return;
-    dispatch(toggleFavorite(car));
-  };
-
   const addressParts = car.address?.split(',').map((part) => part.trim()) || [];
   const city =
     addressParts.length >= 2 ? addressParts[addressParts.length - 2] : '';

@@ -1,39 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleFavorite } from '../../redux/favorites/favoritesSlice';
-import { selectFavorites } from '../../redux/favorites/favoritesSelectors';
+import React, { useEffect, useState } from 'react';
 import { Heart } from 'lucide-react';
+import { useFavorites } from '../../hooks/useFavorites';
 import styles from './FavoriteButton.module.css';
 
 const FavoriteButton = ({ car }) => {
-  const dispatch = useDispatch();
-  const favorites = useSelector(selectFavorites);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    if (!car || !car.id) return;
-    const isFav = favorites.some((favCar) => favCar?.id === car.id);
-    setIsFavorite(isFav);
-  }, [favorites, car]);
+    if (!car || !car.id) {
+      return;
+    }
+
+    try {
+      const isInFavorites = isFavorite(car.id);
+      setIsActive(isInFavorites);
+    } catch (error) {
+      setIsActive(false);
+    }
+  }, [car, isFavorite]);
 
   const handleFavoriteClick = (e) => {
     e.stopPropagation();
 
-    if (!car) return;
+    if (!car || !car.id) {
+      return;
+    }
 
-    setIsFavorite(!isFavorite);
+    try {
+      setIsActive(!isActive);
 
-    dispatch(toggleFavorite(car));
+      toggleFavorite(car);
+    } catch (error) {
+      setIsActive(!isActive);
+    }
   };
 
-  const iconColor = isFavorite ? '#3470FF' : 'white';
-  const iconFill = isFavorite ? '#3470FF' : 'none';
+  const iconColor = isActive ? '#3470FF' : 'white';
+  const iconFill = isActive ? '#3470FF' : 'none';
 
   return (
     <button
       onClick={handleFavoriteClick}
       className={styles.button}
-      aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+      aria-label={isActive ? 'Remove from favorites' : 'Add to favorites'}
       type="button"
     >
       <Heart size={24} stroke={iconColor} fill={iconFill} strokeWidth={2} />
